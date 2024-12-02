@@ -40,7 +40,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":heat-maps"))
+    // implementation(project(":heat-maps"))
+    implementation(libs.heatmaps)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -66,11 +66,11 @@ fun HeatMaps() {
                                         .padding(16.dp)
                                         .fillMaxWidth(),
                                     editEnabled = true,
-                                    onClick = {
-                                        if (data.contains(it)) {
-                                            data -= it
+                                    onClick = { localDate ->
+                                        if (data.contains(localDate)) {
+                                            data -= localDate
                                         } else {
-                                            data += it
+                                            data += localDate
                                         }
                                     }
                                 )
