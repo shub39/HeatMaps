@@ -5,6 +5,16 @@ plugins {
     alias(libs.plugins.maven.publish)
 }
 
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+}
+
 android {
     namespace = "lib.shub39.heatmaps"
     compileSdk = 35
