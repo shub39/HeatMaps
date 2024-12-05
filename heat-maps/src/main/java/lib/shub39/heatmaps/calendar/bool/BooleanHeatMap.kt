@@ -9,14 +9,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import lib.shub39.heatmaps.calendar.bool.component.DayBox
 import java.time.LocalDate
 
@@ -30,34 +28,32 @@ fun BooleanHeatMap(
 ) {
     val listState = rememberLazyListState()
 
-    var weeks by remember { mutableStateOf<List<List<LocalDate?>>>(emptyList()) }
-    val daysSet by remember { mutableStateOf(dates.map { it }.toSet()) }
+    val daysSet by remember { derivedStateOf { dates.toSet() } }
 
-    LaunchedEffect(daysSet) {
-        weeks = withContext(Dispatchers.Default) {
-            val startDate = LocalDate.now().minusDays(LocalDate.now().dayOfWeek.value.toLong())
-                .minusWeeks(maxWeeks)
-            val allDays = generateSequence(startDate) { it.plusDays(1) }
-                .takeWhile { !it.isAfter(LocalDate.now()) }
-                .toList()
+    val weeks = remember(daysSet) {
+        val startDate = LocalDate.now().minusDays(LocalDate.now().dayOfWeek.value.toLong())
+            .minusWeeks(maxWeeks)
+        val allDays = generateSequence(startDate) { it.plusDays(1) }
+            .takeWhile { !it.isAfter(LocalDate.now()) }
+            .toList()
 
-            val daysWithEmptyDays = mutableListOf<LocalDate?>()
-            var currentMonth = startDate.monthValue
+        val daysWithEmptyDays = mutableListOf<LocalDate?>()
+        var currentMonth = startDate.monthValue
 
-            for (day in allDays) {
-                daysWithEmptyDays.add(day)
-
-                if (day.plusDays(1).monthValue != currentMonth) {
-                    currentMonth = day.plusDays(1).monthValue
-                    repeat(7) {
-                        daysWithEmptyDays.add(null)
-                    }
+        for (day in allDays) {
+            daysWithEmptyDays.add(day)
+            if (day.plusDays(1).monthValue != currentMonth) {
+                currentMonth = day.plusDays(1).monthValue
+                repeat(7) {
+                    daysWithEmptyDays.add(null)
                 }
             }
-
-            daysWithEmptyDays.chunked(7)
         }
 
+        daysWithEmptyDays.chunked(7)
+    }
+
+    LaunchedEffect(weeks) {
         listState.scrollToItem(weeks.size - 1)
     }
 
