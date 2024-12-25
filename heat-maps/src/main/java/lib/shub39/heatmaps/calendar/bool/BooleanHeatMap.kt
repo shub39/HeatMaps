@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import lib.shub39.heatmaps.calendar.bool.component.DayBox
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 @Composable
@@ -24,6 +25,7 @@ fun BooleanHeatMap(
     modifier: Modifier = Modifier,
     maxWeeks: Long = 17,
     editEnabled: Boolean = false,
+    startFrom: DayOfWeek = DayOfWeek.MONDAY,
     onClick: (LocalDate) -> Unit = {},
 ) {
     val listState = rememberLazyListState()
@@ -31,8 +33,7 @@ fun BooleanHeatMap(
     val daysSet by remember { derivedStateOf { dates.toSet() } }
 
     val weeks = remember(daysSet) {
-        val startDate = LocalDate.now().minusDays(LocalDate.now().dayOfWeek.value.toLong())
-            .minusWeeks(maxWeeks)
+        val startDate = LocalDate.now().with(startFrom).minusWeeks(maxWeeks)
         val allDays = generateSequence(startDate) { it.plusDays(1) }
             .takeWhile { !it.isAfter(LocalDate.now()) }
             .toList()

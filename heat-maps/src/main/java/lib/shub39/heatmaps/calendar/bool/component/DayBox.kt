@@ -19,7 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import java.time.LocalDate
 
 @Composable
-fun DayBox(
+internal fun DayBox(
     done: Boolean,
     day: LocalDate,
     editEnabled: Boolean,

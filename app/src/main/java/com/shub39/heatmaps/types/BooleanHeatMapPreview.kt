@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import lib.shub39.heatmaps.calendar.bool.BooleanHeatMap
+import lib.shub39.heatmaps.calendar.bool.WeekActivity
 import java.time.LocalDate
 import kotlin.collections.minus
 import kotlin.collections.plus
@@ -42,6 +43,12 @@ fun BooleanHeatMapPreview() {
                 }
             )
         }
+
+        Spacer(modifier = Modifier.padding(16.dp))
+
+        WeekActivity(
+            dates = data
+        )
 
         Spacer(modifier = Modifier.padding(16.dp))
 
